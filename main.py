@@ -4,14 +4,16 @@ import requests
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import os
+import json
 
 # 環境変数から設定
 SPREADSHEET_KEY = os.getenv("SPREADSHEET_KEY")
 SLACK_WEBHOOK_URL = os.getenv("SLACK_WEBHOOK_URL")
 
-# Google Sheets 認証
+# Google Sheets 認証（環境変数からJSONを読み込む形式）
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-credentials = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
+credentials_info = json.loads(os.environ["GCP_CREDENTIALS"])
+credentials = ServiceAccountCredentials.from_json_keyfile_dict(credentials_info, scope)
 client = gspread.authorize(credentials)
 
 # 通知抑制設定（6時間）
