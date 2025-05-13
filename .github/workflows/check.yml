@@ -1,7 +1,7 @@
 name: Sheet Monitor
 
 on:
-  workflow_dispatch:  # 外部から手動実行のみ
+  workflow_dispatch:  # 外部からの手動実行用（ZapierやGASで使用）
 
 jobs:
   monitor:
@@ -21,6 +21,7 @@ jobs:
 
       - name: Run monitoring script
         env:
+          GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
           SPREADSHEET_KEY: ${{ secrets.SPREADSHEET_KEY }}
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: python main.py
