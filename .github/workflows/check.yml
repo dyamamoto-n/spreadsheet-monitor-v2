@@ -1,11 +1,26 @@
-name: Manual Trigger
+name: Sheet Monitor
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:  # 外部から手動実行のみ
 
 jobs:
-  run-script:
+  monitor:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Hello Message
-        run: echo "Hello from GitHub Actions!"
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run monitoring script
+        env:
+          SPREADSHEET_KEY: ${{ secrets.SPREADSHEET_KEY }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: python main.py
